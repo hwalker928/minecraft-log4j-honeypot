@@ -7,8 +7,8 @@ import (
 	"os"
 	"regexp"
 
-	"github.com/Adikso/minecraft-log4j-honeypot/extractor"
-	"github.com/Adikso/minecraft-log4j-honeypot/minecraft"
+	"github.com/hwalker928/minecraft-log4j-honeypot/extractor"
+	"github.com/hwalker928/minecraft-log4j-honeypot/minecraft"
 )
 
 type Config struct {
