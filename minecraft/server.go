@@ -3,14 +3,15 @@ package minecraft
 import (
 	_ "embed"
 	"fmt"
+	"log"
+	"strings"
+
 	"github.com/Tnze/go-mc/data/packetid"
 	"github.com/Tnze/go-mc/nbt"
 	"github.com/Tnze/go-mc/net"
 	pk "github.com/Tnze/go-mc/net/packet"
 	"github.com/Tnze/go-mc/offline"
 	"github.com/google/uuid"
-	"log"
-	"strings"
 )
 
 const (
@@ -193,6 +194,8 @@ func (s *Server) handshake(conn net.Conn) (protocol, intention int32, err error)
 
 	log.Printf("Received handshake: %d %d %s:%d\n", Protocol, Intention, ServerAddress, ServerPort)
 
+	// TODO: check if several attempts has occured from the same IP, and then report using AbuseIPDB
+
 	return int32(Protocol), int32(Intention), err
 }
 
@@ -250,7 +253,7 @@ func (s *Session) joinGame(conn net.Conn) error {
 		return conn.WritePacket(pk.Marshal(0x23,
 			pk.Int(0),          // EntityID
 			pk.UnsignedByte(1), // Gamemode
-			pk.Int(0), // changed
+			pk.Int(0),          // changed
 			pk.UnsignedByte(0),
 			pk.UnsignedByte(MaxPlayer),
 			pk.String("default"),
@@ -260,7 +263,7 @@ func (s *Session) joinGame(conn net.Conn) error {
 		return conn.WritePacket(pk.Marshal(0x25,
 			pk.Int(0),          // EntityID
 			pk.UnsignedByte(1), // Gamemode
-			pk.Int(0), // changed
+			pk.Int(0),          // changed
 			pk.UnsignedByte(0),
 			pk.UnsignedByte(MaxPlayer),
 			pk.String("default"),
@@ -290,29 +293,29 @@ func (s *Session) joinGame(conn net.Conn) error {
 		))
 	} else if s.ProtocolVersion >= 735 && s.ProtocolVersion <= 736 {
 		return conn.WritePacket(pk.Marshal(0x25,
-			pk.Int(0),                                          // EntityID
-			pk.UnsignedByte(1),                                 // Gamemode
-			pk.UnsignedByte(1),                                 // Previous Gamemode
-			pk.VarInt(1),                                       // World Count
-			pk.Ary{Len: 1, Ary: []pk.Identifier{"world"}},      // World Names
+			pk.Int(0),          // EntityID
+			pk.UnsignedByte(1), // Gamemode
+			pk.UnsignedByte(1), // Previous Gamemode
+			pk.VarInt(1),       // World Count
+			pk.Ary{Len: 1, Ary: []pk.Identifier{"world"}},       // World Names
 			pk.NBT(nbt.StringifiedMessage(dimensionCodec2SNBT)), // Dimension codec
 			pk.Identifier("overworld"),
-			pk.Identifier("world"),                             // World Name
-			pk.Long(0),                                         // Hashed Seed
-			pk.VarInt(MaxPlayer),                               // Max Players
-			pk.VarInt(15),                                      // View Distance
-			pk.Boolean(false),                                  // Reduced Debug Info
-			pk.Boolean(true),                                   // Enable respawn screen
-			pk.Boolean(false),                                  // Is Debug
-			pk.Boolean(true),                                   // Is Flat
+			pk.Identifier("world"), // World Name
+			pk.Long(0),             // Hashed Seed
+			pk.VarInt(MaxPlayer),   // Max Players
+			pk.VarInt(15),          // View Distance
+			pk.Boolean(false),      // Reduced Debug Info
+			pk.Boolean(true),       // Enable respawn screen
+			pk.Boolean(false),      // Is Debug
+			pk.Boolean(true),       // Is Flat
 		))
 	} else if s.ProtocolVersion >= 751 {
 		return conn.WritePacket(pk.Marshal(0x24,
-			pk.Int(0),                                          // EntityID
-			pk.Boolean(false),                                  // Is hardcore
-			pk.UnsignedByte(1),                                 // Gamemode
-			pk.Byte(1),                                         // Previous Gamemode
-			pk.VarInt(1),                                       // World Count
+			pk.Int(0),          // EntityID
+			pk.Boolean(false),  // Is hardcore
+			pk.UnsignedByte(1), // Gamemode
+			pk.Byte(1),         // Previous Gamemode
+			pk.VarInt(1),       // World Count
 			pk.Ary{Len: 1, Ary: []pk.Identifier{"world"}},      // World Names
 			pk.NBT(nbt.StringifiedMessage(dimensionCodecSNBT)), // Dimension codec
 			pk.NBT(nbt.StringifiedMessage(dimensionSNBT)),      // Dimension

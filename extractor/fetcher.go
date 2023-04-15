@@ -3,8 +3,6 @@ package extractor
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/go-ldap/ldap"
-	"github.com/google/uuid"
 	"io"
 	"io/ioutil"
 	"log"
@@ -13,6 +11,9 @@ import (
 	"os"
 	"strings"
 	"time"
+
+	"github.com/go-ldap/ldap"
+	"github.com/google/uuid"
 )
 
 func DownloadPayload(entry *ldap.Entry) (string, error) {
@@ -99,7 +100,7 @@ func SaveDetails(entry *ldap.Entry) (string, error) {
 
 	file, _ := json.MarshalIndent(entry, "", " ")
 
-	err = ioutil.WriteFile("payloads/" + filename, file, 0644)
+	err = ioutil.WriteFile("payloads/"+filename, file, 0644)
 	if err != nil {
 		return "", err
 	}

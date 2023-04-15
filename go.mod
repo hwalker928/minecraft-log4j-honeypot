@@ -1,4 +1,4 @@
-module github.com/Adikso/minecraft-log4j-honeypot
+module github.com/hwalker928/minecraft-log4j-honeypot
 
 go 1.17
 

@@ -1,0 +1,9 @@
+{
+  "server": {
+    "port": "25565"
+  },
+  "AbuseIPDB": {
+    "enabled": false,
+    "apiKey": "<your api key>"
+  }
+}

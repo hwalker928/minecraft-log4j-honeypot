@@ -2,6 +2,7 @@ package minecraft
 
 import (
 	"encoding/json"
+	"fmt"
 	"log"
 
 	"github.com/Tnze/go-mc/chat"
@@ -51,7 +52,7 @@ func (s *Session) listResp() string {
 		FavIcon     string       `json:"favicon,omitempty"`
 	}
 
-	list.Version.Name = "1.7.5"
+	list.Version.Name = "1.8.8"
 	list.Version.Protocol = int(s.ProtocolVersion)
 
 	version := s.GetVersionName()
@@ -77,9 +78,9 @@ func (s *Session) listResp() string {
 
 func (s *Session) GetVersionName() string {
 	mapping := map[int32]string{
-		4: "1.7.5",
-		5: "1.7.10",
-		47: "1.8.9",
+		4:   "1.7.5",
+		5:   "1.7.10",
+		47:  "1.8.9",
 		107: "1.9",
 		108: "1.9.1",
 		109: "1.9.2",
@@ -106,9 +107,18 @@ func (s *Session) GetVersionName() string {
 		751: "1.16.2",
 		753: "1.16.3",
 		754: "1.16.5",
+		755: "1.17",
+		756: "1.17.1",
+		757: "1.18",
+		758: "1.18.2",
+		759: "1.19",
+		760: "1.19.2",
+		761: "1.19.3",
+		762: "1.19.4",
 	}
 
 	if _, has := mapping[s.ProtocolVersion]; !has {
+		fmt.Println("Unknown protocol version:", s.ProtocolVersion)
 		return ""
 	}
 
