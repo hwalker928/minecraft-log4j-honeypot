@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"strings"
+	"time"
 
 	"github.com/Tnze/go-mc/data/packetid"
 	"github.com/Tnze/go-mc/nbt"
@@ -12,6 +13,7 @@ import (
 	pk "github.com/Tnze/go-mc/net/packet"
 	"github.com/Tnze/go-mc/offline"
 	"github.com/google/uuid"
+	"github.com/hwalker928/minecraft-log4j-honeypot/database"
 )
 
 const (
@@ -194,7 +196,44 @@ func (s *Server) handshake(conn net.Conn) (protocol, intention int32, err error)
 
 	log.Printf("Received handshake: %d %d %s:%d\n", Protocol, Intention, ServerAddress, ServerPort)
 
-	// TODO: check if several attempts has occured from the same IP, and then report using AbuseIPDB
+	// check if several attempts has occured from the same IP, and then report using AbuseIPDB
+
+	dbConn := database.GetDB()
+
+	// update the last attempt time
+	_, err = dbConn.Exec("UPDATE attempts SET last_attempt = $1 WHERE ip = $2", time.Now(), conn.Socket.RemoteAddr().String())
+
+	// if the ip is not in the database, insert it
+	if err != nil {
+		log.Println("New IP detected, inserting into database")
+		_, err = dbConn.Exec("INSERT INTO attempts (ip, last_attempt) VALUES ($1, $2)", conn.Socket.RemoteAddr().String(), time.Now())
+	} else {
+		_, err = dbConn.Exec("UPDATE attempts SET attempts = attempts + 1 WHERE ip = $1", conn.Socket.RemoteAddr().String())
+
+		// if the ip has already been reported, skip it
+		var reported bool
+		err = dbConn.QueryRow("SELECT abuseipdb_reported FROM attempts WHERE ip = $1", conn.Socket.RemoteAddr().String()).Scan(&reported)
+		if err != nil {
+			log.Println("Error getting reported status")
+		} else {
+			if reported {
+				log.Println("IP is already reported")
+				return
+			}
+		}
+
+		// if the last attempt was less than 5 minutes ago, block the ip
+		var lastAttempt time.Time
+		err = dbConn.QueryRow("SELECT last_attempt FROM attempts WHERE ip = $1", conn.Socket.RemoteAddr().String()).Scan(&lastAttempt)
+		if err != nil {
+			log.Println("Error getting last attempt time")
+		} else {
+			if time.Since(lastAttempt) < 5*time.Minute {
+				log.Println("IP should now be blocked")
+				return
+			}
+		}
+	}
 
 	return int32(Protocol), int32(Intention), err
 }

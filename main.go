@@ -7,6 +7,7 @@ import (
 	"os"
 	"regexp"
 
+	"github.com/hwalker928/minecraft-log4j-honeypot/database"
 	"github.com/hwalker928/minecraft-log4j-honeypot/extractor"
 	"github.com/hwalker928/minecraft-log4j-honeypot/minecraft"
 )
@@ -60,6 +61,24 @@ func main() {
 	err = json.Unmarshal(bytes, &config)
 	if err != nil {
 		log.Fatal(err)
+	}
+
+	database.OpenDatabase("./database.db")
+	defer database.CloseDatabase()
+
+	dbConn := database.GetDB()
+
+	_, err = dbConn.Exec(`CREATE TABLE IF NOT EXISTS attempts (
+		id INTEGER PRIMARY KEY AUTOINCREMENT,
+		ip TEXT NOT NULL,
+		attempts INTEGER NOT NULL DEFAULT 1,
+		last_attempt DATETIME NOT NULL,
+		abuseipdb_reported INTEGER NOT NULL DEFAULT 0
+	  )`)
+	if err != nil {
+		log.Fatal(err)
+	} else {
+		log.Println("Database table 'attempts' created or already exists.")
 	}
 
 	if config.AbuseIPDB.Enabled {
