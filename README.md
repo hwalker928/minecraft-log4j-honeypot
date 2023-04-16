@@ -20,10 +20,11 @@ go build .
 ### Using Docker Compose
 
 ```
-mkdir minecraft-log4j-honeypot
+git clone https://github.com/hwalker928/minecraft-log4j-honeypot.git
 cd minecraft-log4j-honeypot
-wget https://raw.githubusercontent.com/hwalker928/minecraft-log4j-honeypot/master/docker-compose.yml
-wget https://raw.githubusercontent.com/hwalker928/minecraft-log4j-honeypot/master/config.example.json -O config.json
+cp config.example.json config.json
+touch database.db
+mkdir payloads
 docker compose up -d
 ```
 
