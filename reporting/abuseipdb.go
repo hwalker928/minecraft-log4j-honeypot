@@ -44,9 +44,10 @@ func AbuseIPDBReport(ipAddress string) {
 
 	if resp.StatusCode == 200 {
 		log.Printf("Reported IP address (%s) to AbuseIPDB!", ipAddress)
-		SendWebhook("AbuseIPDB Report", "Reported IP address ("+ipAddress+") to AbuseIPDB!", 0xa52a2a)
+		SendWebhook("AbuseIPDB Report: Success", "Reported IP address ("+ipAddress+") to AbuseIPDB!", 0xe06666)
 	} else {
 		log.Printf("Failed to report IP address to AbuseIPDB! Error: %s", resp.Body)
+		SendWebhook("AbuseIPDB Report: Failed", "Failed to report IP address ("+ipAddress+") to AbuseIPDB!", 0x392B44)
 	}
 }
 
