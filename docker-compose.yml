@@ -10,3 +10,4 @@ services:
     volumes:
       - "./config.json:/config.json"
       - "./payloads:/payloads"
+      - "./database.db:/database.db"
