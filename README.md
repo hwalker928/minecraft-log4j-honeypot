@@ -28,3 +28,9 @@ docker run --rm -it --mount type=bind,source="${PWD}/payloads",target=/payloads 
 ```
 
 ## Configuring AbuseIPDB
+
+You can generate an API key from AbuseIPDB [here](https://www.abuseipdb.com/account/api). Once you have an API key, you can set it in the `config.json` file.
+
+## Configuring Discord Webhook
+
+You can create a Discord webhook [here](https://support.discord.com/hc/en-us/articles/228383668-Intro-to-Webhooks). Once you have a webhook, you can set it in the `config.json` file.

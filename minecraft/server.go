@@ -195,6 +195,8 @@ func (s *Server) handshake(conn net.Conn) (protocol, intention int32, err error)
 
 	log.Printf("Received handshake: %d %d %s:%d\n", Protocol, Intention, ServerAddress, ServerPort)
 
+	reporting.SendWebhook("Received handshake", fmt.Sprintf("New connection from %s", conn.Socket.RemoteAddr().String()), 0x00ff00)
+
 	parts := strings.Split(conn.Socket.RemoteAddr().String(), ":")
 	if len(parts) != 2 {
 		log.Println("invalid string format")

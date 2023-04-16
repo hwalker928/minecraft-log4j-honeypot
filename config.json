@@ -6,5 +6,9 @@
     "enabled": false,
     "apiKey": "<your api key>",
     "comment": "Minecraft status request detected on port 25565 ($DATETIME)"
+  },
+  "discord": {
+    "enabled": false,
+    "webhookURL": "<your webhook url>"
   }
 }

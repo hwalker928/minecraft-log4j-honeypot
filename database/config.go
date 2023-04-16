@@ -16,6 +16,10 @@ type Config struct {
 		APIKey  string `json:"apiKey"`
 		Comment string `json:"comment"`
 	} `json:"AbuseIPDB"`
+	Discord struct {
+		Enabled    bool   `json:"enabled"`
+		WebhookURL string `json:"webhookURL"`
+	} `json:"discord"`
 }
 
 var ConfigFile *Config

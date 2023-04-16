@@ -7,6 +7,7 @@ import (
 	"github.com/hwalker928/minecraft-log4j-honeypot/database"
 	"github.com/hwalker928/minecraft-log4j-honeypot/extractor"
 	"github.com/hwalker928/minecraft-log4j-honeypot/minecraft"
+	"github.com/hwalker928/minecraft-log4j-honeypot/reporting"
 )
 
 type Config struct {
@@ -65,6 +66,8 @@ func main() {
 	if config.AbuseIPDB.Enabled {
 		log.Println("AbuseIPDB reporting is enabled")
 	}
+
+	reporting.SendWebhook("Minecraft Honeypot: Started", "Service has started on port "+config.Server.Port, 0x98fb98)
 
 	server := minecraft.NewServer(":" + config.Server.Port)
 	server.ChatMessageCallback = Analyse
