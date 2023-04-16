@@ -8,6 +8,6 @@ services:
     ports:
       - "25565:25565"
     volumes:
-      - "./config.json:/config.json"
-      - "./payloads:/payloads"
-      - "./database.db:/database.db"
+      - "./config.json:/etc/minecraft-log4j-honeypot/config.json"
+      - "./payloads:/etc/minecraft-log4j-honeypot/payloads"
+      - "./database.db:/etc/minecraft-log4j-honeypot/database.db"

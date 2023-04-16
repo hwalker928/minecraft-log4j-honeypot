@@ -16,5 +16,6 @@ FROM alpine:latest AS runner
 COPY --from=builder /go/bin/minecraft-log4j-honeypot /etc/minecraft-log4j-honeypot/minecraft-log4j-honeypot
 
 EXPOSE 25565
+WORKDIR /etc/minecraft-log4j-honeypot
 
 ENTRYPOINT ["/etc/minecraft-log4j-honeypot/minecraft-log4j-honeypot"]
