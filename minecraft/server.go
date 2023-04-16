@@ -16,7 +16,7 @@ import (
 )
 
 const (
-	MaxPlayer = 50
+	MaxPlayer = 20
 )
 
 type Session struct {
