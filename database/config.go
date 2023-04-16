@@ -9,7 +9,9 @@ import (
 
 type Config struct {
 	Server struct {
-		Port string `json:"port"`
+		Port          string `json:"port"`
+		Name          string `json:"name"`
+		MinecraftOnly bool   `json:"minecraftOnly"`
 	} `json:"server"`
 	AbuseIPDB struct {
 		Enabled bool   `json:"enabled"`

@@ -1,6 +1,8 @@
 {
   "server": {
-    "port": "25565"
+    "port": "25565",
+    "name": "US-1",
+    "minecraftOnly": true
   },
   "AbuseIPDB": {
     "enabled": false,

@@ -20,6 +20,9 @@ func SendWebhook(title string, description string, color int) {
 		Title       string `json:"title"`
 		Description string `json:"description"`
 		Color       int    `json:"color"`
+		Footer      struct {
+			Text string `json:"text"`
+		} `json:"footer"`
 	}
 
 	// Define the main payload as a struct
@@ -33,6 +36,11 @@ func SendWebhook(title string, description string, color int) {
 		Title:       title,
 		Description: description,
 		Color:       color,
+		Footer: struct {
+			Text string `json:"text"`
+		}{
+			Text: "Sent from " + database.GetConfig().Server.Name,
+		},
 	}
 
 	// Create a new payload with the embed
