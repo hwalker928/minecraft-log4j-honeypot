@@ -13,9 +13,8 @@ RUN go install .
 # Export binary only from builder environment
 FROM alpine:latest AS runner
 
-COPY --from=builder /go/bin/minecraft-log4j-honeypot /usr/local/bin/minecraft-log4j-honeypot
+COPY --from=builder /go/bin/minecraft-log4j-honeypot /etc/minecraft-log4j-honeypot/minecraft-log4j-honeypot
 
-VOLUME payloads
 EXPOSE 25565
 
-ENTRYPOINT ["/usr/local/bin/minecraft-log4j-honeypot"]
+ENTRYPOINT ["/etc/minecraft-log4j-honeypot/minecraft-log4j-honeypot"]

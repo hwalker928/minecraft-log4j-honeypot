@@ -17,14 +17,13 @@ go build .
 ./minecraft-log4j-honeypot
 ```
 
-### Using Docker
+### Using Docker Compose
 
 ```
-git clone https://github.com/hwalker928/minecraft-log4j-honeypot.git
+mkdir minecraft-log4j-honeypot
 cd minecraft-log4j-honeypot
-docker build -t minecraft-log4j-honeypot .
-mkdir payloads
-docker run --rm -it --mount type=bind,source="${PWD}/payloads",target=/payloads --user=`id -u` -p 25565:25565 minecraft-log4j-honeypot
+wget https://raw.githubusercontent.com/hwalker928/minecraft-log4j-honeypot/master/docker-compose.yml
+docker compose up -d
 ```
 
 ## Configuring AbuseIPDB

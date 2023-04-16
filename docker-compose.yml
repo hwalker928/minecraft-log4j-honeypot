@@ -1,0 +1,12 @@
+version: "3.9"
+
+services:
+  minecraft-log4j-honeypot:
+    container_name: "minecraft-log4j-honeypot"
+    restart: "unless-stopped"
+    image: "ghcr.io/hwalker928/minecraft-log4j-honeypot:latest"
+    ports:
+      - "25565:25565"
+    volumes:
+      - "./config.json:/etc/minecraft-log4j-honeypot/config.json"
+      - "./payloads:/etc/minecraft-log4j-honeypot/payloads"
