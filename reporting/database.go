@@ -48,7 +48,9 @@ func UpdateIPValues(ip string) {
 		log.Println("Error getting last attempt time")
 	} else {
 		if time.Since(lastAttempt) < 5*time.Minute {
-			log.Println("IP should now be blocked")
+			log.Println("IP is now being reported")
+			AbuseIPDBReport(ip)
+			_, err = dbConn.Exec("UPDATE attempts SET abuseipdb_reported = 1 WHERE ip = $1", ip)
 			return
 		}
 	}

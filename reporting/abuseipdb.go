@@ -2,9 +2,11 @@ package reporting
 
 import (
 	"fmt"
+	"log"
 	"net"
 	"net/http"
 	"strings"
+	"time"
 
 	"github.com/hwalker928/minecraft-log4j-honeypot/database"
 )
@@ -18,7 +20,9 @@ func AbuseIPDBReport(ipAddress string) {
 
 	// Prepare the HTTP POST request to abuseipdb
 	url := "https://api.abuseipdb.com/api/v2/report"
-	data := strings.NewReader("ip=" + ipAddress + "&comment=" + database.GetConfig().AbuseIPDB.Comment + "&categories=14,15") // "Port scan" and "Hacking" categories
+	data := strings.NewReader("ip=" + ipAddress + "&comment=" + strings.ReplaceAll(database.GetConfig().AbuseIPDB.Comment, "$DATETIME", time.Now().UTC().Format("2006-01-02 15:04:05")) + "&categories=14,15") // "Port scan" and "Hacking" categories
+
+	log.Println(strings.ReplaceAll(database.GetConfig().AbuseIPDB.Comment, "$DATETIME", time.Now().UTC().Format("2006-01-02 15:04:05")))
 
 	req, err := http.NewRequest("POST", url, data)
 	if err != nil {
