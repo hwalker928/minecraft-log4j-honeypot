@@ -200,27 +200,34 @@ func (s *Server) handshake(conn net.Conn) (protocol, intention int32, err error)
 
 	dbConn := database.GetDB()
 
-	// update the last attempt time
-	_, err = dbConn.Exec("UPDATE attempts SET last_attempt = $1 WHERE ip = $2", time.Now(), conn.Socket.RemoteAddr().String())
+	parts := strings.Split(conn.Socket.RemoteAddr().String(), ":")
+	if len(parts) != 2 {
+		log.Println("invalid string format")
+		return int32(Protocol), int32(Intention), err
+	}
+	ip := parts[0]
 
-	query := fmt.Sprintf("SELECT COUNT(*) FROM attempts WHERE ip = '%s'", conn.Socket.RemoteAddr().String())
+	// update the last attempt time
+	_, err = dbConn.Exec("UPDATE attempts SET last_attempt = $1 WHERE ip = $2", time.Now(), ip)
+
+	query := fmt.Sprintf("SELECT COUNT(*) FROM attempts WHERE ip = '%s'", ip)
 	var count int
 	err = dbConn.QueryRow(query).Scan(&count)
 	if err != nil {
-		panic(err)
+		log.Println(err)
 	}
 
 	if count == 0 {
 		log.Println("New IP detected, inserting into database")
-		_, err = dbConn.Exec("INSERT INTO attempts (ip, last_attempt) VALUES ($1, $2)", conn.Socket.RemoteAddr().String(), time.Now())
+		_, err = dbConn.Exec("INSERT INTO attempts (ip, last_attempt) VALUES ($1, $2)", ip, time.Now())
 		return int32(Protocol), int32(Intention), err
 	}
 
-	_, err = dbConn.Exec("UPDATE attempts SET attempts = attempts + 1 WHERE ip = $1", conn.Socket.RemoteAddr().String())
+	_, err = dbConn.Exec("UPDATE attempts SET attempts = attempts + 1 WHERE ip = $1", ip)
 
 	// if the ip has already been reported, skip it
 	var reported bool
-	err = dbConn.QueryRow("SELECT abuseipdb_reported FROM attempts WHERE ip = $1", conn.Socket.RemoteAddr().String()).Scan(&reported)
+	err = dbConn.QueryRow("SELECT abuseipdb_reported FROM attempts WHERE ip = $1", ip).Scan(&reported)
 	if err != nil {
 		log.Println("Error getting reported status")
 	} else {
@@ -232,7 +239,7 @@ func (s *Server) handshake(conn net.Conn) (protocol, intention int32, err error)
 
 	// if the last attempt was less than 5 minutes ago, block the ip
 	var lastAttempt time.Time
-	err = dbConn.QueryRow("SELECT last_attempt FROM attempts WHERE ip = $1", conn.Socket.RemoteAddr().String()).Scan(&lastAttempt)
+	err = dbConn.QueryRow("SELECT last_attempt FROM attempts WHERE ip = $1", ip).Scan(&lastAttempt)
 	if err != nil {
 		log.Println("Error getting last attempt time")
 	} else {
