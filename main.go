@@ -67,6 +67,15 @@ func main() {
 		log.Println("AbuseIPDB reporting is enabled")
 	}
 
+	// get number of rows in db
+	var count int
+	err = dbConn.QueryRow("SELECT COUNT(*) FROM attempts").Scan(&count)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	log.Println("Loaded", count, "IPs from database")
+
 	reporting.SendWebhook("Minecraft Honeypot: Started", "Service has started on port "+config.Server.Port, 0x98fb98)
 
 	server := minecraft.NewServer(":" + config.Server.Port)
