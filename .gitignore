@@ -1,3 +1,4 @@
 payloads/
 .idea/
 database.db
+config.json

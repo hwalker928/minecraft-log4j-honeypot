@@ -23,6 +23,7 @@ go build .
 mkdir minecraft-log4j-honeypot
 cd minecraft-log4j-honeypot
 wget https://raw.githubusercontent.com/hwalker928/minecraft-log4j-honeypot/master/docker-compose.yml
+wget https://raw.githubusercontent.com/hwalker928/minecraft-log4j-honeypot/master/config.example.json -O config.json
 docker compose up -d
 ```
 
