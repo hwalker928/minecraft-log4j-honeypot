@@ -1,7 +1,6 @@
 package reporting
 
 import (
-	"fmt"
 	"log"
 	"net"
 	"net/http"
@@ -14,7 +13,7 @@ import (
 func AbuseIPDBReport(ipAddress string) {
 	// Validate the IP address
 	if !isValidIP(ipAddress) {
-		fmt.Println("Invalid IP address!")
+		log.Println("Invalid IP address!")
 		return
 	}
 
@@ -26,7 +25,7 @@ func AbuseIPDBReport(ipAddress string) {
 
 	req, err := http.NewRequest("POST", url, data)
 	if err != nil {
-		fmt.Println(err)
+		log.Println(err)
 		return
 	}
 
@@ -37,16 +36,16 @@ func AbuseIPDBReport(ipAddress string) {
 	client := &http.Client{}
 	resp, err := client.Do(req)
 	if err != nil {
-		fmt.Println(err)
+		log.Println(err)
 		return
 	}
 
 	defer resp.Body.Close()
 
 	if resp.StatusCode == 200 {
-		fmt.Printf("Reported IP address (%s) to AbuseIPDB!", ipAddress)
+		log.Printf("Reported IP address (%s) to AbuseIPDB!", ipAddress)
 	} else {
-		fmt.Printf("Failed to report IP address to AbuseIPDB! Error: %s", resp.Body)
+		log.Printf("Failed to report IP address to AbuseIPDB! Error: %s", resp.Body)
 	}
 }
 

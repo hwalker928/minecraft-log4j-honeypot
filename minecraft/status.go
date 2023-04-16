@@ -2,7 +2,6 @@ package minecraft
 
 import (
 	"encoding/json"
-	"fmt"
 	"log"
 
 	"github.com/Tnze/go-mc/chat"
@@ -118,7 +117,7 @@ func (s *Session) GetVersionName() string {
 	}
 
 	if _, has := mapping[s.ProtocolVersion]; !has {
-		fmt.Println("Unknown protocol version:", s.ProtocolVersion)
+		log.Println("Unknown protocol version:", s.ProtocolVersion)
 		return ""
 	}
 
