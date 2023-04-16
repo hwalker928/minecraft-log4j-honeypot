@@ -1,10 +1,7 @@
 package main
 
 import (
-	"encoding/json"
-	"io/ioutil"
 	"log"
-	"os"
 	"regexp"
 
 	"github.com/hwalker928/minecraft-log4j-honeypot/database"
@@ -45,30 +42,14 @@ func Analyse(text string) {
 }
 
 func main() {
-	file, err := os.Open("config.json")
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer file.Close()
-
-	bytes, err := ioutil.ReadAll(file)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	var config Config
-
-	err = json.Unmarshal(bytes, &config)
-	if err != nil {
-		log.Fatal(err)
-	}
-
+	database.OpenConfig()
 	database.OpenDatabase("./database.db")
 	defer database.CloseDatabase()
 
 	dbConn := database.GetDB()
+	config := database.GetConfig()
 
-	_, err = dbConn.Exec(`CREATE TABLE IF NOT EXISTS attempts (
+	_, err := dbConn.Exec(`CREATE TABLE IF NOT EXISTS attempts (
 		id INTEGER PRIMARY KEY AUTOINCREMENT,
 		ip TEXT NOT NULL,
 		attempts INTEGER NOT NULL DEFAULT 1,

@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"log"
 	"strings"
-	"time"
 
 	"github.com/Tnze/go-mc/data/packetid"
 	"github.com/Tnze/go-mc/nbt"
@@ -13,7 +12,7 @@ import (
 	pk "github.com/Tnze/go-mc/net/packet"
 	"github.com/Tnze/go-mc/offline"
 	"github.com/google/uuid"
-	"github.com/hwalker928/minecraft-log4j-honeypot/database"
+	"github.com/hwalker928/minecraft-log4j-honeypot/reporting"
 )
 
 const (
@@ -196,58 +195,13 @@ func (s *Server) handshake(conn net.Conn) (protocol, intention int32, err error)
 
 	log.Printf("Received handshake: %d %d %s:%d\n", Protocol, Intention, ServerAddress, ServerPort)
 
-	// check if several attempts has occured from the same IP, and then report using AbuseIPDB
-
-	dbConn := database.GetDB()
-
 	parts := strings.Split(conn.Socket.RemoteAddr().String(), ":")
 	if len(parts) != 2 {
 		log.Println("invalid string format")
 		return int32(Protocol), int32(Intention), err
 	}
-	ip := parts[0]
 
-	// update the last attempt time
-	_, err = dbConn.Exec("UPDATE attempts SET last_attempt = $1 WHERE ip = $2", time.Now(), ip)
-
-	query := fmt.Sprintf("SELECT COUNT(*) FROM attempts WHERE ip = '%s'", ip)
-	var count int
-	err = dbConn.QueryRow(query).Scan(&count)
-	if err != nil {
-		log.Println(err)
-	}
-
-	if count == 0 {
-		log.Println("New IP detected, inserting into database")
-		_, err = dbConn.Exec("INSERT INTO attempts (ip, last_attempt) VALUES ($1, $2)", ip, time.Now())
-		return int32(Protocol), int32(Intention), err
-	}
-
-	_, err = dbConn.Exec("UPDATE attempts SET attempts = attempts + 1 WHERE ip = $1", ip)
-
-	// if the ip has already been reported, skip it
-	var reported bool
-	err = dbConn.QueryRow("SELECT abuseipdb_reported FROM attempts WHERE ip = $1", ip).Scan(&reported)
-	if err != nil {
-		log.Println("Error getting reported status")
-	} else {
-		if reported {
-			log.Println("IP is already reported")
-			return int32(Protocol), int32(Intention), err
-		}
-	}
-
-	// if the last attempt was less than 5 minutes ago, block the ip
-	var lastAttempt time.Time
-	err = dbConn.QueryRow("SELECT last_attempt FROM attempts WHERE ip = $1", ip).Scan(&lastAttempt)
-	if err != nil {
-		log.Println("Error getting last attempt time")
-	} else {
-		if time.Since(lastAttempt) < 5*time.Minute {
-			log.Println("IP should now be blocked")
-			return int32(Protocol), int32(Intention), err
-		}
-	}
+	reporting.UpdateIPValues(parts[0])
 
 	return int32(Protocol), int32(Intention), err
 }

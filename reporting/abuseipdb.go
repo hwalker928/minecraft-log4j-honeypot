@@ -1,10 +1,12 @@
-package main
+package reporting
 
 import (
 	"fmt"
 	"net"
 	"net/http"
 	"strings"
+
+	"github.com/hwalker928/minecraft-log4j-honeypot/database"
 )
 
 func AbuseIPDBReport(ipAddress string) {
@@ -16,7 +18,7 @@ func AbuseIPDBReport(ipAddress string) {
 
 	// Prepare the HTTP POST request to abuseipdb
 	url := "https://api.abuseipdb.com/api/v2/report"
-	data := strings.NewReader("ip=" + ipAddress + "&categories=14,15") // "Port scan" and "Hacking" categories
+	data := strings.NewReader("ip=" + ipAddress + "&comment=" + database.GetConfig().AbuseIPDB.Comment + "&categories=14,15") // "Port scan" and "Hacking" categories
 
 	req, err := http.NewRequest("POST", url, data)
 	if err != nil {
@@ -25,7 +27,7 @@ func AbuseIPDBReport(ipAddress string) {
 	}
 
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
-	req.Header.Set("Key", "<your API key>") // Replace with your actual API key
+	req.Header.Set("Key", database.GetConfig().AbuseIPDB.APIKey) // Replace with your actual API key
 
 	// Send the HTTP request
 	client := &http.Client{}
