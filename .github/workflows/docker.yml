@@ -28,4 +28,4 @@ jobs:
           platforms: linux/amd64
           push: true
           tags: |
-            ghcr.io/hwalker928/minecraft-honeypot:latest
+            ghcr.io/hwalker928/minecraft-log4j-honeypot:latest
