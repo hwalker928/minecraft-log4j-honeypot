@@ -1,8 +1,8 @@
 # Build environment
 FROM golang:1.17-alpine AS builder
 
-COPY . $GOPATH/src/github.com/Adikso/minecraft-log4j-honeypot
-WORKDIR $GOPATH/src/github.com/Adikso/minecraft-log4j-honeypot
+COPY . $GOPATH/src/github.com/hwalker928/minecraft-log4j-honeypot
+WORKDIR $GOPATH/src/github.com/hwalker928/minecraft-log4j-honeypot
 RUN go install .
 
 # Export binary only from builder environment
