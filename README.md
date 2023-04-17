@@ -28,6 +28,10 @@ mkdir payloads
 docker compose up -d
 ```
 
+### Notice about Minecraft Only config
+
+I would recommend setting `minecraftOnly` to `false` if the port is 25565, else, I would suggest setting it to `true`. This is to prevent non-Minecraft traffic to be detected and flagged, but if the port is 25565, then it is known to be Minecraft-related.
+
 ## Configuring AbuseIPDB
 
 You can generate an API key from AbuseIPDB [here](https://www.abuseipdb.com/account/api). Once you have an API key, you can set it in the `config.json` file.
