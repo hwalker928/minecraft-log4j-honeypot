@@ -69,6 +69,7 @@ func (s *Server) acceptConn(conn net.Conn) {
 		}
 
 		reporting.UpdateIPValues(parts[0], s.Server)
+		return
 	}
 
 	defer func() {
