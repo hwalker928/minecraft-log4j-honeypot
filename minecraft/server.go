@@ -59,7 +59,7 @@ func (s *Server) acceptConn(conn net.Conn) {
 	defer conn.Close()
 
 	ipString := conn.Socket.RemoteAddr().String()
-	log.Printf("New connection from %s\n", ipString)
+	log.Printf("New connection from %s to %s\n", ipString, s.Server.Name)
 
 	if !s.Server.MinecraftOnly {
 		parts := strings.Split(conn.Socket.RemoteAddr().String(), ":")
