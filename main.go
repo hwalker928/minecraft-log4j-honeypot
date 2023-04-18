@@ -3,6 +3,7 @@ package main
 import (
 	"log"
 	"regexp"
+	"time"
 
 	"github.com/hwalker928/minecraft-log4j-honeypot/database"
 	"github.com/hwalker928/minecraft-log4j-honeypot/extractor"
@@ -78,5 +79,9 @@ func main() {
 
 		go mcServer.Run()
 		reporting.SendWebhook("Minecraft Honeypot: Started", "Service has started on port "+server.Port, 0x98fb98, server)
+	}
+
+	for {
+		time.Sleep(time.Duration(1<<63 - 1))
 	}
 }
