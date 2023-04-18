@@ -23,7 +23,7 @@ func UpdateIPValues(ip string, server database.ServerConfig) {
 
 	if count == 0 {
 		log.Println("New IP detected, inserting into database")
-		_, err = dbConn.Exec("INSERT INTO attempts (ip, last_attempt) VALUES ($1, $2, $3)", ip, time.Now(), server.Name)
+		_, err = dbConn.Exec("INSERT INTO attempts (ip, last_attempt, reporting_server) VALUES ($1, $2, $3)", ip, time.Now(), server.Name)
 		return
 	}
 
