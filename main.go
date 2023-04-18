@@ -78,8 +78,9 @@ func main() {
 		mcServer.Server = server
 
 		go mcServer.Run()
-		reporting.SendWebhook("Minecraft Honeypot: Started", "Service has started on port "+server.Port, 0x98fb98, server)
 	}
+
+	reporting.SendWebhook("Minecraft Honeypot: Started", "Started services", 0x98fb98, config.Servers[0])
 
 	for {
 		time.Sleep(time.Duration(1<<63 - 1))
