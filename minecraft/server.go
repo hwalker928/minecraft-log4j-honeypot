@@ -61,6 +61,16 @@ func (s *Server) acceptConn(conn net.Conn) {
 	ipString := conn.Socket.RemoteAddr().String()
 	log.Printf("New connection from %s\n", ipString)
 
+	if !s.Server.MinecraftOnly {
+		parts := strings.Split(conn.Socket.RemoteAddr().String(), ":")
+		if len(parts) != 2 {
+			log.Println("invalid string format")
+			return
+		}
+
+		reporting.UpdateIPValues(parts[0], s.Server)
+	}
+
 	defer func() {
 		if err := recover(); err != nil {
 			log.Printf("catching panic: %v", err)
@@ -195,7 +205,7 @@ func (s *Server) handshake(conn net.Conn) (protocol, intention int32, err error)
 	}
 	err = p.Scan(&Protocol, &ServerAddress, &ServerPort, &Intention)
 
-	if s.Server.MinecraftOnly && !CheckProtocol(protocol) {
+	if !CheckProtocol(protocol) {
 		return int32(Protocol), int32(Intention), err
 	}
 
