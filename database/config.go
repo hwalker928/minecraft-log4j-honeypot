@@ -7,16 +7,18 @@ import (
 	"os"
 )
 
+type ServerConfig struct {
+	Port          string `json:"port"`
+	Name          string `json:"name"`
+	MinecraftOnly bool   `json:"minecraftOnly"`
+	Comment       string `json:"comment"`
+}
+
 type Config struct {
-	Server struct {
-		Port          string `json:"port"`
-		Name          string `json:"name"`
-		MinecraftOnly bool   `json:"minecraftOnly"`
-	} `json:"server"`
+	Servers   []ServerConfig `json:"servers"`
 	AbuseIPDB struct {
 		Enabled bool   `json:"enabled"`
 		APIKey  string `json:"apiKey"`
-		Comment string `json:"comment"`
 	} `json:"AbuseIPDB"`
 	Discord struct {
 		Enabled    bool   `json:"enabled"`

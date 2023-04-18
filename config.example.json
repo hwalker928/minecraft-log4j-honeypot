@@ -1,13 +1,27 @@
 {
-  "server": {
-    "port": "25565",
-    "name": "US-1",
-    "minecraftOnly": true
-  },
+  "servers": [
+    {
+      "port": "25565",
+      "name": "US-1",
+      "minecraftOnly": false,
+      "comment": "[$NAME] Minecraft status request detected on port $PORT ($DATETIME)"
+    },
+    {
+      "port": "25566",
+      "name": "US-2",
+      "minecraftOnly": true,
+      "comment": "[$NAME] Minecraft status request detected on port $PORT ($DATETIME)"
+    },
+    {
+      "port": "25567",
+      "name": "US-3",
+      "minecraftOnly": true,
+      "comment": "[$NAME] Minecraft status request detected on port $PORT ($DATETIME)"
+    }
+  ],
   "AbuseIPDB": {
     "enabled": false,
-    "apiKey": "<your api key>",
-    "comment": "Minecraft status request detected on port 25565 ($DATETIME)"
+    "apiKey": "<your api key>"
   },
   "discord": {
     "enabled": false,

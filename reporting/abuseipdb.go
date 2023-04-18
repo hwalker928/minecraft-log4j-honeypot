@@ -10,7 +10,7 @@ import (
 	"github.com/hwalker928/minecraft-log4j-honeypot/database"
 )
 
-func AbuseIPDBReport(ipAddress string) {
+func AbuseIPDBReport(ipAddress string, server database.ServerConfig) {
 	// Validate the IP address
 	if !isValidIP(ipAddress) {
 		log.Println("Invalid IP address!")
@@ -19,9 +19,12 @@ func AbuseIPDBReport(ipAddress string) {
 
 	// Prepare the HTTP POST request to abuseipdb
 	url := "https://api.abuseipdb.com/api/v2/report"
-	data := strings.NewReader("ip=" + ipAddress + "&comment=" + strings.ReplaceAll(database.GetConfig().AbuseIPDB.Comment, "$DATETIME", time.Now().UTC().Format("2006-01-02 15:04:05")) + "&categories=14,15") // "Port scan" and "Hacking" categories
+	comment := server.Comment
+	comment = strings.ReplaceAll(comment, "$DATETIME", time.Now().UTC().Format("2006-01-02 15:04:05"))
+	comment = strings.ReplaceAll(comment, "$NAME", server.Name)
+	comment = strings.ReplaceAll(comment, "$PORT", server.Port)
 
-	log.Println(strings.ReplaceAll(database.GetConfig().AbuseIPDB.Comment, "$DATETIME", time.Now().UTC().Format("2006-01-02 15:04:05")))
+	data := strings.NewReader("ip=" + ipAddress + "&comment=" + comment + "&categories=14,15") // "Port scan" and "Hacking" categories
 
 	req, err := http.NewRequest("POST", url, data)
 	if err != nil {
@@ -44,10 +47,10 @@ func AbuseIPDBReport(ipAddress string) {
 
 	if resp.StatusCode == 200 {
 		log.Printf("Reported IP address (%s) to AbuseIPDB!", ipAddress)
-		SendWebhook("AbuseIPDB Report: Success", "Reported IP address ("+ipAddress+") to AbuseIPDB!", 0xe06666)
+		SendWebhook("AbuseIPDB Report: Success", "Reported IP address ("+ipAddress+") to AbuseIPDB!", 0xe06666, server)
 	} else {
 		log.Printf("Failed to report IP address to AbuseIPDB! Error: %s", resp.Body)
-		SendWebhook("AbuseIPDB Report: Failed", "Failed to report IP address ("+ipAddress+") to AbuseIPDB!", 0x392B44)
+		SendWebhook("AbuseIPDB Report: Failed", "Failed to report IP address ("+ipAddress+") to AbuseIPDB!", 0x392B44, server)
 	}
 }
 

@@ -27,6 +27,7 @@ type Session struct {
 
 type Server struct {
 	Address             string
+	Server              database.ServerConfig
 	AcceptLoginCallback func(userName string)
 	ChatMessageCallback func(text string)
 }
@@ -194,7 +195,7 @@ func (s *Server) handshake(conn net.Conn) (protocol, intention int32, err error)
 	}
 	err = p.Scan(&Protocol, &ServerAddress, &ServerPort, &Intention)
 
-	if database.GetConfig().Server.MinecraftOnly && !CheckProtocol(protocol) {
+	if s.Server.MinecraftOnly && !CheckProtocol(protocol) {
 		return int32(Protocol), int32(Intention), err
 	}
 
@@ -206,7 +207,7 @@ func (s *Server) handshake(conn net.Conn) (protocol, intention int32, err error)
 		return int32(Protocol), int32(Intention), err
 	}
 
-	reporting.UpdateIPValues(parts[0])
+	reporting.UpdateIPValues(parts[0], s.Server)
 
 	return int32(Protocol), int32(Intention), err
 }

@@ -8,7 +8,7 @@ import (
 	"github.com/hwalker928/minecraft-log4j-honeypot/database"
 )
 
-func SendWebhook(title string, description string, color int) {
+func SendWebhook(title string, description string, color int, server database.ServerConfig) {
 	if !database.GetConfig().Discord.Enabled {
 		return
 	}
@@ -39,7 +39,7 @@ func SendWebhook(title string, description string, color int) {
 		Footer: struct {
 			Text string `json:"text"`
 		}{
-			Text: "Sent from " + database.GetConfig().Server.Name,
+			Text: "Sent from " + server.Name,
 		},
 	}
 
