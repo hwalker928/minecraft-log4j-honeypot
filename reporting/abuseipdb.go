@@ -50,7 +50,6 @@ func AbuseIPDBReport(ipAddress string, server database.ServerConfig) {
 		SendWebhook("AbuseIPDB Report: Success", "Reported IP address ("+ipAddress+") to AbuseIPDB!", 0xe06666, server)
 	} else {
 		log.Printf("Failed to report IP address to AbuseIPDB! Error: %s", resp.Body)
-		SendWebhook("AbuseIPDB Report: Failed", "Failed to report IP address ("+ipAddress+") to AbuseIPDB!", 0x392B44, server)
 	}
 }
 
